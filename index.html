@@ -177,6 +177,45 @@ tr.pos td:first-child{box-shadow:inset 3px 0 var(--good)}
 tr.neg td:first-child{box-shadow:inset 3px 0 var(--bad)}
 tbody tr:hover td{background:var(--surface-2)}
 
+/* ---------------------------------------------------------- 개요 */
+.card.lead{border-left:3px solid var(--accent)}
+.card.lead > h2{font-size:17px; line-height:1.4; margin-bottom:10px}
+.card p{margin:0 0 10px; max-width:64ch}
+.card p:last-child{margin-bottom:0}
+.verdict{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 !important}
+.verdict span{
+  flex:1 1 220px; padding:10px 12px; border-radius:3px; font-weight:600; font-size:14px;
+}
+.verdict .no{background:var(--bad-soft); color:var(--bad)}
+.verdict .yes{background:var(--good-soft); color:var(--good)}
+.foot{font-size:12px; color:var(--muted); margin-top:10px !important}
+ol.steps{margin:6px 0 0; padding-left:20px}
+ol.steps li{margin-bottom:7px; max-width:64ch}
+ol.steps li::marker{color:var(--accent); font-family:var(--mono); font-weight:600}
+.ab{display:grid; gap:10px; grid-template-columns:1fr; margin-top:10px}
+@media (min-width:560px){ .ab{grid-template-columns:1fr 1fr} }
+.ab-card{
+  border:1px solid var(--line); border-radius:3px; padding:11px 13px;
+  background:var(--surface-2); display:flex; flex-direction:column; gap:3px;
+}
+.ab-card .k{
+  font-family:var(--mono); font-weight:600; font-size:20px; color:var(--accent);
+  line-height:1.1;
+}
+.ab-card span:last-child{font-size:12.5px; color:var(--muted)}
+.guide-grid{display:grid; gap:10px; grid-template-columns:1fr}
+@media (min-width:640px){ .guide-grid{grid-template-columns:1fr 1fr} }
+.guide-grid div{
+  border:1px solid var(--line-soft); border-radius:3px; padding:10px 12px;
+  background:var(--surface-2);
+}
+.guide-grid b{display:block; margin-bottom:2px}
+.guide-grid span{font-size:12.5px; color:var(--muted)}
+.card.caveat{border-left:3px solid var(--bad)}
+.card.caveat ul{margin:4px 0 0; padding-left:19px}
+.card.caveat li{margin-bottom:7px; max-width:64ch}
+.card.caveat li::marker{color:var(--bad)}
+
 /* ---------------------------------------------------------- 안내 */
 pre.guide{
   font-family:var(--mono); font-size:12px; line-height:1.65; margin:0;
@@ -201,6 +240,80 @@ footer{
   <nav class="tabs" id="tabs" role="tablist" aria-label="화면"></nav>
 
   <main>
+    <!-- ----------------------------------------------- 0 개요 -->
+    <section class="panel" id="p-intro" role="tabpanel">
+      <div class="card lead">
+        <h2>정기 측량한 해빈 지형으로 장래 지형을 예측한 실험입니다</h2>
+        <p>물리 기반 수치모형 대신 자료 기반 학습모형을 씁니다. 모델이 배우는 것은
+           <b>‘지형 A → 지형 B’ 라는 짝</b>이고, 측량 한 번은 학습 예제가 되지 않습니다.
+           답이 없기 때문입니다.</p>
+        <p class="verdict">
+          <span class="no">1~3개월 뒤는 맞히지 못하고</span>
+          <span class="yes">9~20개월 뒤는 맞힙니다.</span>
+        </p>
+        <p>학습이 덜 된 것이 아니라 <b>예측할 수 있는 시간 규모의 문제</b>입니다.
+           두 달 뒤 해변 모습은 그 사이 태풍이 왔느냐로 갈리는데, 지금 지형 모양 안에
+           그 정보가 없습니다. 측량을 더 해도 생기지 않습니다.</p>
+      </div>
+
+      <div class="card">
+        <h2>세 해역</h2>
+        <p class="hint">서해·남해·동해에서 각각 한 곳씩 골랐습니다. 위 단추로 고릅니다.</p>
+        <div class="tablewrap"><table id="intro-sites"></table></div>
+        <p class="foot">안인만 z 가 수심이라 부호가 반대입니다(+ 가 침식). 격자간격은 세 해역 모두 20 m.</p>
+      </div>
+
+      <div class="card">
+        <h2>실험은 이렇게 했습니다</h2>
+        <ol class="steps">
+          <li><b>마지막 3회(또는 1회) 측량을 남겨둡니다.</b>
+              모델이 한 번도 보지 못한 날짜입니다.</li>
+          <li><b>나머지로 학습합니다.</b> 검증 시점에 걸치는 짝은 전부 제외합니다.</li>
+          <li><b>지형 한 장을 넣어 남겨둔 날짜를 예측합니다.</b>
+              입력은 한 장이 아니라 연속한 세 장 [i−2, i−1, i] 입니다.</li>
+        </ol>
+        <p class="hint" style="margin-top:10px">
+          여기서 <b>넣어주는 지형 한 장</b>에 따라 결과가 크게 갈립니다. 그것이 A 와 B 입니다.</p>
+        <div class="ab">
+          <div class="ab-card"><span class="k">A</span>
+            <b>학습기간의 마지막 지형</b>
+            <span>1~5개월 뒤를 예측 — 잘 안 됩니다</span></div>
+          <div class="ab-card"><span class="k">B</span>
+            <b>학습기간의 첫 지형</b>
+            <span>9~20개월 뒤를 예측 — 잘 됩니다</span></div>
+        </div>
+        <p class="foot"><b>A 와 B 는 학습이 완전히 같습니다. 모델도 하나입니다.</b>
+           다른 것은 예측할 때 넣어준 지형 한 장뿐입니다.</p>
+      </div>
+
+      <div class="card">
+        <h2>숫자 읽는 법</h2>
+        <div class="tablewrap"><table id="intro-metrics"></table></div>
+        <p class="foot">절대표고끼리 비교하면 corr 0.99 가 나오지만, 지형이 원래 잘 안 변해서
+           생기는 착시라 쓰지 않습니다. 반드시 시작지형을 빼고 <b>변화량</b>으로 비교합니다.</p>
+      </div>
+
+      <div class="card">
+        <h2>화면 안내</h2>
+        <div class="guide-grid" id="intro-tabs"></div>
+      </div>
+
+      <div class="card caveat">
+        <h2>읽으실 때 유의할 점</h2>
+        <ul>
+          <li><b>B 는 외삽입니다.</b> 학습에서 본 적 없는 긴 시간 간격을 예측하라는 문제입니다.
+              만리포는 학습 최대 209일인데 B 는 239~298일을 요구합니다. B 의 좋은 수치는
+              이 조건과 함께 읽어야 합니다.</li>
+          <li><b>딥러닝 두 모형은 실행할 때마다 값이 달라집니다.</b> 시드를 고정해도 그렇습니다.
+              XGBoost 만 완전히 재현됩니다.</li>
+          <li><b>시점쌍 수가 정보의 양은 아닙니다.</b> 만리포 55쌍의 실질 독립 정보량은 7개입니다.
+              정답이 가법적이라 나머지는 선형결합입니다.</li>
+          <li><b>외력 특징의 정의가 해역마다 다릅니다.</b> 해역을 가로질러 ‘어느 외력이 중요하다’고
+              말하려면 그 문제를 먼저 풀어야 합니다.</li>
+        </ul>
+      </div>
+    </section>
+
     <!-- ----------------------------------------------- 1 외력 효과 -->
     <section class="panel" id="p-forcing" role="tabpanel">
       <div class="card">
@@ -299,7 +412,7 @@ const METRICS = [["corr","corr  변화량 상관"], ["BSS","BSS  개선도"], ["
 
 /* ------------------------------------------------------------- 상태 */
 const S = {
-  site: SITES[0], tab: "forcing",
+  site: SITES[0], tab: "intro",
   f: {split:DATA.splits[0], metric:"corr", model:DATA.models[0], date:"", view:"chart", scope:"one"},
   m: {base:"A", split:DATA.splits[0], input:DATA.inputs[1], model:DATA.models[0], date:"", view:"change"},
   t: {src:Object.keys(DATA.tables)[0], scope:"one"}
@@ -550,6 +663,41 @@ function esc(t){
 function keyRow(items){
   return '<div class="keys">' + items.map(i =>
     '<span><i style="background:' + i.color + '"></i>' + esc(i.name) + '</span>').join("") + '</div>';
+}
+
+/* ------------------------------------------------------------- 탭 0 개요 */
+const SITE_FACTS = {
+  "만리포": ["13회", "2023-10 ~ 2024-10 (0.98년)", "대조차, 전 기간 동일 측량방식"],
+  "명사십리": ["25회 (13 + 12)", "2018-07 ~ 2020-03 · 2021-07 ~ 2022-06",
+               "두 블록이 약 1.3년 공백으로 분리 — 짝이 블록을 넘나들지 않음"],
+  "안인": ["17회", "2021-02 ~ 2022-12 (1.83년)", "3해역 중 격자 최대. z 는 수심"]
+};
+const METRIC_HELP = [
+  ["corr", "예측한 변화량이 실제 변화량과 얼마나 닮았나", "1 에 가까울수록 좋음"],
+  ["BSS", "‘변화 없다’고 그냥 찍는 것과 견준 값", "음수면 그보다 못하다는 뜻"],
+  ["RMSE", "오차의 크기 (m)", "낮을수록 좋음"],
+  ["진폭비", "예측 변화량이 실제만큼 큰가", "1 에 가까울수록 좋음. 작으면 밋밋한 예측"]
+];
+function fillTable(el, cols, rows, firstBold){
+  el.innerHTML = "<thead><tr>" + cols.map(c => "<th>" + esc(c) + "</th>").join("") +
+    "</tr></thead><tbody>" + rows.map(r => "<tr>" + r.map((v, i) =>
+      "<td>" + (firstBold && i === 0 ? "<b>" + esc(v) + "</b>" : esc(v)) + "</td>").join("") +
+      "</tr>").join("") + "</tbody>";
+}
+function renderIntro(){
+  fillTable(document.getElementById("intro-sites"),
+    ["해역", "위치", "측량", "관측기간", "유효셀", "비고"],
+    SITES.map(s => {
+      const f = SITE_FACTS[s] || ["", "", ""];
+      return [s, DATA.sites[s].sub, f[0], f[1], DATA.sites[s].n.toLocaleString() + "칸", f[2]];
+    }), true);
+  fillTable(document.getElementById("intro-metrics"),
+    ["지표", "무엇을 재나", "읽는 법"], METRIC_HELP, true);
+  const g = document.getElementById("intro-tabs");
+  g.innerHTML = TABS.filter(t => t[0] !== "intro").map(([, name], i) =>
+    '<div><b>' + (i + 2) + '. ' + esc(name) + '</b><span>' +
+    esc(TAB_WHAT[name] || "") + '</span></div>').join("");
+  remember();
 }
 
 /* ------------------------------------------------------------- 탭 1 */
@@ -818,7 +966,15 @@ function renderSites(){
     host.appendChild(b);
   });
 }
-const TABS = [["forcing", "외력 효과"], ["maps", "지형 예측 지도"], ["tables", "성능표"], ["guide", "안내"]];
+const TABS = [["intro", "개요"], ["forcing", "외력 효과"], ["maps", "지형 예측 지도"],
+              ["tables", "성능표"], ["guide", "안내"]];
+const TAB_WHAT = {
+  "개요": "이 연구가 무엇이고 숫자를 어떻게 읽는지",
+  "외력 효과": "파랑·조석을 넣었을 때와 넣지 않았을 때를 견줍니다",
+  "지형 예측 지도": "실제 변화량과 예측 변화량을 나란히 봅니다",
+  "성능표": "모든 조합의 수치. BSS 부호에 색 띠가 붙습니다",
+  "안내": "결과 파일 구성과 실험 설계 원문"
+};
 function renderTabs(){
   const host = document.getElementById("tabs");
   host.innerHTML = "";
@@ -836,7 +992,8 @@ function renderTabs(){
 function renderAll(){
   renderSites();
   renderTabs();
-  if (S.tab === "forcing") renderForcing();
+  if (S.tab === "intro") renderIntro();
+  else if (S.tab === "forcing") renderForcing();
   else if (S.tab === "maps") renderMaps();
   else if (S.tab === "tables") renderTables();
   else document.getElementById("g-out").textContent = DATA.guide;
