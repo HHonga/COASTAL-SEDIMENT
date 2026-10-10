@@ -246,7 +246,7 @@ select{min-height:46px;font-size:14px;padding:10px 12px}
 .result-meta span{padding:5px 10px;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:6px;font-size:13px}
 .saved-map{border-top:1px solid var(--line-soft);padding-top:16px}
 .saved-map h3{font-size:16px;margin:0 0 12px}
-@media(min-width:900px){.controls{grid-template-columns:repeat(4,minmax(0,1fr))}#m-view{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(min-width:900px){.controls{grid-template-columns:repeat(4,minmax(0,1fr))}#m-view{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 </style>
 </head>
@@ -366,8 +366,6 @@ select{min-height:46px;font-size:14px;padding:10px 12px}
           <div class="field"><label for="m-model">모델</label><select id="m-model"></select></div>
           <div class="field view-field"><label>보기</label>
             <div class="seg" id="m-view">
-              <button type="button" data-v="change">수치 지도 · 변화량</button>
-              <button type="button" data-v="elev">수치 지도 · 표고</button>
               <button type="button" data-v="change_png">지도 그림 · 변화량</button>
               <button type="button" data-v="elev_png">지도 그림 · 표고</button>
             </div>
@@ -811,6 +809,8 @@ function renderForcingMaps(out){
 /* ------------------------------------------------------------- 탭 2 */
 function renderMaps(){
   const m = S.m;
+  if (m.view === "change") m.view = "change_png";
+  if (m.view === "elev") m.view = "elev_png";
   m.exp = fillSelect(document.getElementById("m-exp"), DATA.exps.map(e => e.id), m.exp, EXP_SHORT);
   m.case = fillSelect(document.getElementById("m-case"), DATA.cases[S.site], m.case);
   document.getElementById("m-case").disabled = DATA.cases[S.site].length < 2;
